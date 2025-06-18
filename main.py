@@ -6,12 +6,13 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from sqlalchemy.exc import IntegrityError
 from flask_socketio import SocketIO
+import os
 
 app = Flask(__name__)
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost:3306/ocr_database'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -420,4 +421,5 @@ def submit_feedback():
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 10000))
+    socketio.run(app, debug=False, host='0.0.0.0', port=port)
